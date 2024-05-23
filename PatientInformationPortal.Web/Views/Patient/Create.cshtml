@@ -1,0 +1,135 @@
+﻿@model PatientInformationPortal.Web.Models.VmEntities.PatientVm
+@using PatientInformationPortal.Web.Collections
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>PatientVm</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" id="patientForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="DiseaseId" class="control-label"></label>
+                <select asp-for="DiseaseId" class="form-control" asp-items="@(Model.DiseaseDropdown)">
+                    <option>Select Disease</option>
+                </select>
+                <span asp-validation-for="DiseaseId" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label class="control-label">Epilepsy</label>
+                <div>
+                    @foreach (var value in Enum.GetValues(typeof(Epilepsy)).Cast<Epilepsy>())
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" asp-for="Epilepsy" value="@value" id="@($"Epilepsy_{value}")" />
+                            <label class="form-check-label" for="@($"Epilepsy_{value}")">
+                                @value
+                            </label>
+                        </div>
+                    }
+                </div>
+                <span asp-validation-for="Epilepsy" class="text-danger"></span>
+            </div>
+
+            <div class="form-group row mb-3">
+                <div class="col-md-5">
+                    <label asp-for="NCDDetails" class="control-label"></label>
+                    <select id="leftSelectNCDDetails" class="form-control" multiple asp-items="@(Model.DiseaseDropdown)"></select>
+                </div>
+                <div class="col-md-2 d-flex flex-column justify-content-center align-items-center">
+                    <a id="addButtonNCDDetails" class="btn btn-light btn-sm mb-2 button-width">Add &gt;</a>
+                    <a id="removeButtonNCDDetails" class="btn btn-light btn-sm button-width">&lt; Remove</a>
+                </div>
+                <div class="col-md-5">
+                    <label class="control-label"></label>
+                    <select id="rightSelectNCDDetails" asp-for="NCDDetails" class="form-control" multiple></select>
+                    <span asp-validation-for="NCDDetails" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row mb-3">
+                <div class="col-md-5">
+                    <label asp-for="AllergiesDetails" class="control-label"></label>
+                    <select id="leftSelectAllergiesDetails" class="form-control" asp-items="@(Model.AllergyDropdown)" multiple></select>
+                </div>
+                <div class="col-md-2 d-flex flex-column justify-content-center align-items-center">
+                    <a id="addButtonAllergiesDetails" class="btn btn-light btn-sm mb-2 button-width">Add &gt;</a>
+                    <a id="removeButtonAllergiesDetails" class="btn btn-light btn-sm button-width">&lt; Remove</a>
+                </div>
+                <div class="col-md-5">
+                    <label class="control-label"></label>
+                    <select id="rightSelectAllergiesDetails" asp-for="AllergiesDetails" class="form-control" multiple></select>
+                    <span asp-validation-for="AllergiesDetails" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.getElementById('addButtonNCDDetails').addEventListener('click', function () {
+            moveSelectedOptions('leftSelectNCDDetails', 'rightSelectNCDDetails');
+        });
+
+        document.getElementById('removeButtonNCDDetails').addEventListener('click', function () {
+            moveSelectedOptions('rightSelectNCDDetails', 'leftSelectNCDDetails');
+        });
+
+        document.getElementById('addButtonAllergiesDetails').addEventListener('click', function () {
+            moveSelectedOptions('leftSelectAllergiesDetails', 'rightSelectAllergiesDetails');
+        });
+
+        document.getElementById('removeButtonAllergiesDetails').addEventListener('click', function () {
+            moveSelectedOptions('rightSelectAllergiesDetails', 'leftSelectAllergiesDetails');
+        });
+
+        document.getElementById('patientForm').addEventListener('submit', function () {
+            setSelectedOptions('rightSelectNCDDetails');
+            setSelectedOptions('rightSelectAllergiesDetails');
+        });
+
+        function moveSelectedOptions(fromSelectId, toSelectId) {
+            var fromSelect = document.getElementById(fromSelectId);
+            var toSelect = document.getElementById(toSelectId);
+
+            for (var i = 0; i < fromSelect.options.length; i++) {
+                if (fromSelect.options[i].selected) {
+                    var newOption = document.createElement('option');
+                    newOption.value = fromSelect.options[i].value;
+                    newOption.text = fromSelect.options[i].text;
+
+                    toSelect.add(newOption);
+                    fromSelect.remove(i);
+                    i--;
+                }
+            }
+        }
+
+        function setSelectedOptions(selectId) {
+            var select = document.getElementById(selectId);
+            for (var i = 0; i < select.options.length; i++) {
+                select.options[i].selected = true;
+            }
+        }
+    </script>
+}
