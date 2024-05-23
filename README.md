@@ -53,7 +53,7 @@ Follow these steps to set up and run the application:
     Update the database connection string in the `appsettings.json` file with your MySQL database connection details.
     
 4. **Create Database**: 
-    After Update the database connection string in the `appsettings.json` file run command ```update-database.
+    After Update the database connection string in the `appsettings.json` file, open package manager console and run command ```update-database```.
 
 5. **Build and Run the Application**: 
     - Build the solution by selecting "Build > Build Solution" from the menu.
